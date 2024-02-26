@@ -619,7 +619,7 @@ new_user(){
 download_udpServer(){
 	msg -nama "        ${a30:-Descargando binario UDPserver} ....."
 	if wget -O /usr/bin/udp-custom-linux-amd64.bin 'https://github.com/http-custom/udpcustom/raw/main/folder/udp-custom-linux-amd64.bin' &>/dev/null ; then
-		chmod +x /usr/bin/udpServer
+		chmod +x /usr/bin/udp-custom-linux-amd64.bin'
 		msg -verd 'OK'
 	else
 		msg -verm2 'fail'
