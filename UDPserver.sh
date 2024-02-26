@@ -667,15 +667,6 @@ echo enable service udp-custom
 systemctl enable udp-custom &>/dev/null
 
 echo history -c
-
-	msg -nama "        ${a31:-Ejecutando servicio UDPserver} ....."
-	systemctl start UDPserver &>/dev/null
-	if [[ $(systemctl is-active UDPserver) = 'active' ]]; then
-		msg -verd 'OK'
-		systemctl enable UDPserver &>/dev/null
-	else
-		msg -verm2 'fail'
-	fi
 }
 
 install_UDP(){
