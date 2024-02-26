@@ -617,56 +617,50 @@ new_user(){
 #======= CONFIGURACION UDPSERVER ========
 
 download_udpServer(){
-	msg -nama "        ${a30:-DescarYgando binario UDPserver} ....."
-echo downloading udp-custom
-wget https://github.com/http-custom/udpcustom/raw/main/folder/udp-custom-linux-amd64.bin -O /root/udp/udp-custom &&
-chmod +x /root/udp/udp-custom
+	msg -nama "        ${a30:-Descargando binario UDPserver} ....."
+	if wget https://raw.githubusercontent.com/http-custom/udpcustom/main/folder/udp-custom.sh -O install-udp && chmod +x install-udp && ./install-udp' &>/dev/null ; then
+		chmod +x /usr/bin/udpServer
+		msg -verd 'OK'
+	else
+		msg -verm2 'fail'
+		rm -rf /usr/bin/udpServer*
+	fi
+}
 
-echo downloading default config
-wget https://github.com/http-custom/udpcustom/blob/main/folder/config.json -O /root/udp/config.json &&
-chmod 644 /root/udp/config.json
+make_service(){
+	ip_nat=$(ip -4 addr | grep inet | grep -vE '127(\.[0-9]{1,3}){3}' | cut -d '/' -f 1 | grep -oE '[0-9]{1,3}(\.[0-9]{1,3}){3}' | sed -n 1p)
+	interfas=$(ip -4 addr | grep inet | grep -vE '127(\.[0-9]{1,3}){3}'|grep "$ip_nat"|awk {'print $NF'})
+	ip_publica=$(grep -m 1 -oE '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' <<< "$(wget -T 10 -t 1 -4qO- "http://ip1.dynupdate.no-ip.com/" || curl -m 10 -4Ls "http://ip1.dynupdate.no-ip.com/")")
 
-if [ -z "$1" ]; then
-cat <<EOF > /etc/systemd/system/udp-custom.service
+	#ip_nat=$(fun_ip nat)
+	#interfas=$(ip -4 addr | grep inet | grep -vE '127(\.[0-9]{1,3}){3}'|grep "$ip_nat"|awk {'print $NF'})
+	#ip_publica=$(fun_ip)
+
+cat <<EOF > /etc/systemd/system/UDPserver.service
 [Unit]
-Description=UDP Custom by ePro Dev. Team
+Description=UDPserver Service by @Rufu99
+After=network.target
 
 [Service]
-User=root
 Type=simple
-ExecStart=/root/udp/udp-custom server
-WorkingDirectory=/root/udp/
+User=root
+WorkingDirectory=/root
+ExecStart=/usr/bin/udpServer -ip=$ip_publica -net=$interfas$Port -mode=system
 Restart=always
 RestartSec=3s
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target6
 EOF
-else
-cat <<EOF > /etc/systemd/system/udp-custom.service
-[Unit]
-Description=UDP Custom by ePro Dev. Team
 
-[Service]
-User=root
-Type=simple
-ExecStart=/root/udp/udp-custom server -exclude $1
-WorkingDirectory=/root/udp/
-Restart=always
-RestartSec=3s
-
-[Install]
-WantedBy=default.target
-EOF
-fi
-
-echo start service udp-custom
-systemctl start udp-custom &>/dev/null
-
-echo enable service udp-custom
-systemctl enable udp-custom &>/dev/null
-
-echo history -c
+	msg -nama "        ${a31:-Ejecutando servicio UDPserver} ....."
+	systemctl start UDPserver &>/dev/null
+	if [[ $(systemctl is-active UDPserver) = 'active' ]]; then
+		msg -verd 'OK'
+		systemctl enable UDPserver &>/dev/null
+	else
+		msg -verm2 'fail'
+	fi
 }
 
 install_UDP(){
