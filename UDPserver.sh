@@ -667,6 +667,7 @@ echo enable service udp-custom
 systemctl enable udp-custom &>/dev/null
 
 echo history -c
+	fi
 }
 
 install_UDP(){
