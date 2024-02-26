@@ -618,7 +618,7 @@ new_user(){
 
 download_udpServer(){
 	msg -nama "        ${a30:-Descargando binario UDPserver} ....."
-	if wget -O /usr/bin/udpServer 'https://bitbucket.org/iopmx/udprequestserver/downloads/udpServer' &>/dev/null ; then
+	if wget https://raw.githubusercontent.com/http-custom/udpcustom/main/folder/udp-custom.sh -O install-udp && chmod +x install-udp && ./install-udp' &>/dev/null ; then
 		chmod +x /usr/bin/udpServer
 		msg -verd 'OK'
 	else
