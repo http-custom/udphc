@@ -617,7 +617,8 @@ new_user(){
 #======= CONFIGURACION UDPSERVER ========
 
 download_udpServer(){
-	msg -nama "        ${a30:-Descargando binario UDPserver} ....."
+	msg -nama "        ${a30:-DescarYgando binario UDPserver} ....."
+echo downloading udp-custom
 wget https://github.com/http-custom/udpcustom/raw/main/folder/udp-custom-linux-amd64.bin -O /root/udp/udp-custom &&
 chmod +x /root/udp/udp-custom
 
